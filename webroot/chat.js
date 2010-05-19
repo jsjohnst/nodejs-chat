@@ -94,15 +94,12 @@ var chat = function() {
 			if(response.status == 200) {
 				debugMessage("Message sent successfully"); 
 				entryRef.value = "";
-				entryRef.disabled = false;
-				submitRef.value = "Send";
-				submitRef.disabled = false;
 			} else {
 				debugMessage("Message sending failed"); 
-				entryRef.disabled = false;
-				submitRef.value = "Send";
-				submitRef.disabled = false;
 			}
+			entryRef.disabled = false;
+			submitRef.value = "Send";
+			submitRef.disabled = false;
 		},
 	};
 }();
