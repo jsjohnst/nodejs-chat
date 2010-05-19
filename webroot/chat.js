@@ -6,6 +6,7 @@ var chat = function() {
 	var debugRef;
 	var clientId = Math.random();
 	var latestId = -1;
+	var seenIds = [];
 	
 	function debugMessage(message) {
 		var markup = "<div>" + message + "</div>";
@@ -53,7 +54,10 @@ var chat = function() {
 			var message = messages[i];
 			var prefix = "<font color='" + (message.clientId == clientId ? 'red' : 'green') + "'>" + (message.clientId == clientId ? 'You' : 'Other') + "</font>";
 			var markup = "<div id='msg" + message.sequence + "'><span>" + prefix + "</span>: " + message.content + "</div>";
-			chatRef.innerHTML += markup;
+			if(seenIds.indexOf(message.sequence) === -1) {
+				chatRef.innerHTML += markup;
+				seenIds.push(message.sequence);
+			}
 			latestId = message.sequence;
 		}
 		chatRef.scrollTop = chatRef.scrollHeight;
