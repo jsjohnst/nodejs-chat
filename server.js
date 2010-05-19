@@ -33,6 +33,11 @@ function sendSubmitResponse(httpResponse, index) {
 	httpResponse.end("chat.receiveSendResponse(" + JSON.stringify({ status: 200, response: { submitedMessageIndex: index }}) + ");");
 }
 
+function sendResponse(httpResponse, msg) {
+	httpResponse.writeHead(200, {'Content-Type': 'text/javascript'});
+	httpResponse.end(JSON.stringify({ status: 200, response: msg}));
+}
+
 function gcMessageHistory() {
 	if((dataStore.length - lastGC) > (HISTORY_LENGTH * 2)) {
 		sys.log("GCing the message history - length: " + dataStore.length + " lastGC: " + lastGC );
@@ -101,7 +106,7 @@ http.createServer(function (req, res) {
 				}
 				
 				sys.log("creating message");
-				var message = { clientId: clientId, content: content, sequence: dataStore.length };
+				var message = { clientId: clientId, content: content, sequence: dataStore.length, ip: req.connection.remoteAddress };
 				
 				sys.log("storing message");
 				var index = dataStore.push(message) - 1;
@@ -113,6 +118,16 @@ http.createServer(function (req, res) {
 				notifier.emit("indexChange", index);
 				
 				gcMessageHistory();
+				break;
+			case 'purge': 
+				sys.log("clearing logs");
+				dataStore = [];
+				
+				sys.log("sending response");
+				sendResponse(res, "purge OK");
+				
+				sys.log("notifying listeners of index reset");
+				notifier.emit("indexChange", 0);
 				break;
 			default:
 				sendErrorResponse(res, 'Method not found: "' + method + '"');

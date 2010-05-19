@@ -8,6 +8,22 @@ var chat = function() {
 	var latestId = -1;
 	var seenIds = [];
 	
+	var ip2Color = {};
+	
+	var colors = [
+		'red',
+		'green',
+		'blue',
+		'orange',
+		'purple',
+		'#339999',
+		'#666',
+		'#393939',
+		'#e33933',
+		'#b284d0',
+		'#8a1e9c'
+	];
+	
 	function debugMessage(message) {
 		var markup = "<div>" + message + "</div>";
 		debugRef.innerHTML += markup;
@@ -47,12 +63,19 @@ var chat = function() {
 		};
 	}
 	
+	function getColor(ip) {
+		if(!ip2Color[ip]) {
+			ip2Color[ip] = colors.pop();
+		}
+		return ip2Color[ip];
+	}
+	
 	function processMessages(jsonString) {
 		debugMessage("Processing messages");
 		var messages = json_parse(jsonString).response;
 		for(var i=0; i < messages.length; i++) {
 			var message = messages[i];
-			var prefix = "<font color='" + (message.clientId == clientId ? 'red' : 'green') + "'>" + (message.clientId == clientId ? 'You' : 'Other') + "</font>";
+			var prefix = "<font color='" + (message.clientId == clientId ? '#000' : getColor(message.ip)) + "'>" + message.ip + "</font>";
 			var markup = "<div id='msg" + message.sequence + "'><span>" + prefix + "</span>: " + message.content + "</div>";
 			if(seenIds.indexOf(message.sequence) === -1) {
 				chatRef.innerHTML += markup;
