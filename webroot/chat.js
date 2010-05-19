@@ -52,7 +52,7 @@ var chat = function() {
 		for(var i=0; i < messages.length; i++) {
 			var message = messages[i];
 			var prefix = "<font color='" + (message.clientId == clientId ? 'red' : 'green') + "'>" + (message.clientId == clientId ? 'You' : 'Other') + "</font>";
-			var markup = "<div><span>" + prefix + "</span>: " + message.content + "</div>";
+			var markup = "<div id='msg" + message.sequence + "'><span>" + prefix + "</span>: " + message.content + "</div>";
 			chatRef.innerHTML += markup;
 			latestId = message.sequence;
 		}
